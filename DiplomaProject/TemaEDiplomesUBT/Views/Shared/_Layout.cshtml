@@ -1,0 +1,128 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - TemaEDiplomesUBT</title>
+
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.1/dist/css/adminlte.min.css" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" />
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+                </li>
+              
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link" data-toggle="dropdown" href="#">
+                        <i class="far fa-bell"></i>
+                        <span class="badge badge-warning navbar-badge">15</span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                        <span class="dropdown-item dropdown-header">15 Notifications</span>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-envelope mr-2"></i> 4 new messages
+                            <span class="float-right text-muted text-sm">3 mins</span>
+                        </a>
+                    </div>
+                </li>
+                @await Html.PartialAsync("_LoginPartial")
+            </ul>
+        </nav>
+
+        <aside class="main-sidebar sidebar-dark-primary elevation-4">
+            <a href="~/Home/Index" class="brand-link text-center">
+                   <span class="brand-text  font-weight-light">OnlineWarehouse</span>
+            </a>
+            <div class="sidebar">
+                <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                        <li class="nav-item">
+                            <a href="~/Sale/Index" class="nav-link">
+                                <i class="nav-icon fas fa-shopping-cart"></i>
+                                <p>Sale</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-action="Index" asp-controller="Payment" class="nav-link">
+                                <i class="nav-icon fas fa-money-bill"></i>
+                                <p>Payment</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-action="ListPaymentDocuments" asp-controller="Payment" class="nav-link">
+                                <i class="nav-icon fas fa-receipt"></i>
+                                <p>ListPaymentDocuments</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-action="Index" asp-controller="Purchase" class="nav-link">
+                                <i class="nav-icon fas fa-warehouse"></i>
+                                <p>Purchase</p>
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a asp-action="Index" asp-controller="Stock" class="nav-link">
+                                <i class="nav-icon fas fa-boxes"></i>
+                                <p>Stock</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-action="Index" asp-controller="Debt" class="nav-link">
+                                <i class="nav-icon fas fa-hand-holding-usd"></i>
+                                <p>My Debt</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-action="Index" asp-controller="DayOff" class="nav-link">
+                                <i class="nav-icon fas fa-calendar-day"></i>
+                                <p>Day Off</p>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </aside>
+
+        <div class="content-wrapper">
+            <section class="content">
+                <div class="container-fluid">
+                    <main role="main" class="pb-3">
+                        @RenderBody()
+                    </main>
+                </div>
+            </section>
+        </div>
+
+        <footer class="main-footer">
+            <strong>&copy; 2024 - TemaEDiplomesUBT.</strong> All rights reserved.
+        </footer>
+
+        <aside class="control-sidebar control-sidebar-dark">
+        </aside>
+    </div>
+
+  
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.1/dist/js/adminlte.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

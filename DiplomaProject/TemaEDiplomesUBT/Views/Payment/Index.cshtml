@@ -1,0 +1,45 @@
+﻿@model TemaEDiplomesUBT.Models.ViewModels.PaymentViewModel
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="customerSelect">Customer</label>
+                <select asp-for="SelectedCustomerId" asp-items="Model.Customers" id="customerSelect" class="form-control">
+                    <option value="">-- Select Customer --</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-md-6 d-flex align-items-end">
+            <button type="button" class="btn btn-primary" id="viewUnpaidDocuments">View Unpaid Documents</button>
+        </div>
+    </div>
+
+    <div id="unpaidDocumentsSection" class="mt-4">
+       
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#viewUnpaidDocuments').click(function () {
+                var selectedCustomerId = $('#customerSelect').val();
+                if (selectedCustomerId) {
+                    $.ajax({
+                        url: '@Url.Action("GetUnpaidDocuments", "Payment")',
+                        type: 'GET',
+                        data: { selectedCustomerId: selectedCustomerId },
+                        success: function (data) {
+                            $('#unpaidDocumentsSection').html(data);
+                        }
+                    });
+                } else {
+                    alert('Please select a customer.');
+                }
+            });
+        });
+    </script>
+}

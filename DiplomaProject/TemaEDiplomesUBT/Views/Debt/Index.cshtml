@@ -1,0 +1,37 @@
+﻿@model TemaEDiplomesUBT.Models.ViewModels.DebtViewModel
+
+<div class="form-group">
+    <label for="supplierSelect">Supplier</label>
+    <select asp-for="SelectedSupplierId" asp-items="Model.Suppliers" id="supplierSelect" class="form-control">
+        <option value="">-- Select Supplier --</option>
+    </select>
+</div>
+
+<button type="button" class="btn btn-primary" id="viewUnpaidDebts">View Unpaid Debts</button>
+
+<div id="unpaidDebtsSection">
+  
+</div>
+
+@section Scripts {
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#viewUnpaidDebts').click(function () {
+                var selectedSupplierId = $('#supplierSelect').val();
+                if (selectedSupplierId) {
+                    $.ajax({
+                        url: '@Url.Action("GetUnpaidDocuments", "Debt")',
+                        type: 'GET',
+                        data: { selectedSupplierId: selectedSupplierId },
+                        success: function (data) {
+                            $('#unpaidDebtsSection').html(data);
+                        }
+                    });
+                } else {
+                    alert('Please select a supplier.');
+                }
+            });
+        });
+    </script>
+}

@@ -1,0 +1,26 @@
+﻿@model TemaEDiplomesUBT.Models.ViewModels.PaymentViewModel
+
+@{
+    ViewBag.Title = "Edit Payment";
+}
+
+<h2>Edit Payment</h2>
+
+<form asp-action="Edit">
+    <div class="form-group">
+        <label asp-for="Amount" class="control-label"></label>
+        <input asp-for="Amount" class="form-control" />
+        <span asp-validation-for="Amount" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="PaymentDate" class="control-label"></label>
+        <input asp-for="PaymentDate" class="form-control" />
+        <span asp-validation-for="PaymentDate" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <input type="hidden" asp-for="SaleId" />
+        <button type="submit" class="btn btn-primary">Save</button>
+    </div>
+</form>
+
+<a asp-action="Index" asp-route-saleId="@Model.SaleId" class="btn btn-secondary">Back to List</a>

@@ -1,0 +1,55 @@
+﻿@model IEnumerable<TemaEDiplomesUBT.Models.Sale>
+
+<h2>Sales List</h2>
+
+<div class="table-responsive">
+    <table id="salesTable" class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>DocumentNo</th>
+                <th>Date</th>
+                <th>Total Amount</th>
+                <th>Actions</th>
+                <th>Customer</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var sale in Model)
+            {
+                <tr>
+                    <td>@sale.DocumentNumber</td>
+                    <td>@sale.SaleDate.ToString("yyyy-MM-dd")</td>
+                    <td>@sale.TotalAmount.ToString("C")</td>
+                    <td>@sale.Customer.Name</td>
+
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@sale.SaleId" class="btn btn-primary">Edit</a>
+                        <a asp-action="Details" asp-route-id="@sale.SaleId" class="btn btn-primary">Detials</a>
+
+                        <a asp-action="Delete" asp-route-id="@sale.SaleId" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<a asp-action="Create" class="btn btn-success">Create New Sale</a>
+
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#salesTable').DataTable({
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true
+            });
+        });
+    </script>
+}

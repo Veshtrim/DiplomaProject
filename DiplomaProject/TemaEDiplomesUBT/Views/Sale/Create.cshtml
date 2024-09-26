@@ -1,0 +1,191 @@
+﻿@model TemaEDiplomesUBT.Models.ViewModels.SaleViewModel
+@if (TempData["ErrorMessage"] != null)
+{
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: '@TempData["ErrorMessage"]'
+        });
+    </script>
+}
+<h2>Create Sale</h2>
+
+<form asp-action="Create">
+    <div class="form-group">
+        <label asp-for="CustomerId">Customer</label>
+        <select asp-for="CustomerId" class="form-control" asp-items="@ViewBag.Customers">
+            <option value=""></option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label asp-for="SaleDate"></label>
+        <input asp-for="SaleDate" class="form-control" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" readonly/>
+    </div>
+
+    <div class="form-group">
+        <label>Total Amount: $<span id="totalAmountText">0.00</span></label>
+        <input type="hidden" asp-for="TotalAmount" id="totalAmount" />
+    </div>
+    <div class="form-group">
+        <label for="IsPaid">Is Paid</label>
+        <div class="custom-control custom-switch">
+            <input type="checkbox" class="custom-control-input" id="IsPaid" name="IsPaid" value="true" @if (Model.IsPaid)
+            {
+                <text>checked</text>
+            } />
+            <label class="custom-control-label" for="IsPaid"></label>
+        </div>
+    </div>
+
+   
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Warehouse</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+        <tbody id="saleDetailsTableBody">
+           
+        </tbody>
+    </table>
+
+   
+    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#productModal">Add Item</button>
+
+    <button type="submit" class="btn btn-primary">Create Sale</button>
+</form>
+
+<div class="modal fade" id="productModal" tabindex="-1" role="dialog" aria-labelledby="productModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="productModalLabel">Select Product and Warehouse</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="productSelect">Product</label>
+                    <select id="productSelect" class="form-control">
+                        @foreach (var product in ViewBag.Products)
+                        {
+                            <option value="@product.Id" data-price="@product.Price">@product.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="warehouseSelect">Warehouse</label>
+                    <select id="warehouseSelect" class="form-control">
+                        @foreach (var warehouse in ViewBag.Warehouses)
+                        {
+                            <option value="@warehouse.Value">@warehouse.Text</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="addProduct">Add</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    var detailIndex = 0;
+
+    $(document).ready(function () {
+        updateTotalAmount();
+
+        $("#addProduct").click(function () {
+            var selectedProductId = $("#productSelect").val();
+            var selectedWarehouseId = $("#warehouseSelect").val();
+            var selectedProductText = $("#productSelect option:selected").text();
+            var selectedWarehouseText = $("#warehouseSelect option:selected").text();
+            var selectedProductPrice = parseFloat($("#productSelect option:selected").data("price"));
+
+            var existingRow = $("table tbody tr").filter(function () {
+                return $(this).find("input[name*='ProductId']").val() == selectedProductId &&
+                    $(this).find("input[name*='WarehouseId']").val() == selectedWarehouseId;
+            });
+
+            if (existingRow.length > 0) {
+                var quantityInput = existingRow.find("input[name*='Quantity']");
+                var currentQuantity = parseInt(quantityInput.val());
+                var newQuantity = currentQuantity + 1;
+                quantityInput.val(newQuantity);
+                existingRow.find("td.subtotal").text((newQuantity * selectedProductPrice).toFixed(2));
+            } else {
+                var newRow = `
+                                    <tr>
+                                        <td>
+                                            <input type="hidden" name="SaleDetails[` + detailIndex + `].ProductId" value="` + selectedProductId + `" />
+                                            ` + selectedProductText + `
+                                        </td>
+                                        <td>
+                                            <input type="hidden" name="SaleDetails[` + detailIndex + `].WarehouseId" value="` + selectedWarehouseId + `" />
+                                            ` + selectedWarehouseText + `
+                                        </td>
+                                        <td class="quantity">
+                                            <input type="number" name="SaleDetails[` + detailIndex + `].Quantity" value="1" class="form-control quantity-input" />
+                                        </td>
+                                        <td>
+                                            <input type="hidden" name="SaleDetails[` + detailIndex + `].Price" value="` + selectedProductPrice + `" />
+                                            ` + selectedProductPrice.toFixed(2) + `
+                                        </td>
+                                        <td class="subtotal">` + selectedProductPrice.toFixed(2) + `</td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger btn-sm remove-item">Remove</button>
+                                        </td>
+                                    </tr>`;
+                $("#saleDetailsTableBody").append(newRow);
+                detailIndex++;
+            }
+
+            updateTotalAmount();
+            
+        });
+
+        function updateTotalAmount() {
+            var totalAmount = 0;
+            $("table tbody tr").each(function () {
+                var subtotal = parseFloat($(this).find("td.subtotal").text());
+                totalAmount += subtotal;
+            });
+            $("#totalAmountText").text(totalAmount.toFixed(2));
+            $("#totalAmount").val(totalAmount.toFixed(2));
+        }
+
+     
+        $(document).on("input", ".quantity-input", function () {
+            var row = $(this).closest("tr");
+            var quantity = parseInt($(this).val());
+            if (quantity < 1) {
+                $(this).val(1); 
+                quantity = 1; 
+            }
+            var price = parseFloat(row.find("input[name*='Price']").val());
+            row.find("td.subtotal").text((quantity * price).toFixed(2));
+            updateTotalAmount();
+        });
+
+        
+        $(document).on("click", ".remove-item", function () {
+            $(this).closest("tr").remove();
+            updateTotalAmount();
+        });
+
+        updateTotalAmount();
+    });
+</script>
+

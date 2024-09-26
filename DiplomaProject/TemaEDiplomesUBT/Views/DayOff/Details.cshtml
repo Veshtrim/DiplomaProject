@@ -1,0 +1,14 @@
+﻿@model TemaEDiplomesUBT.Models.ViewModels.DayOffViewModel
+
+<h2>Day Off Details</h2>
+
+<div>
+    <div>
+        <label>Date:</label> @Model.DayOffDate.ToString("yyyy-MM-dd")
+    </div>
+    <div>
+        <label>Reason:</label> @Model.Reason
+    </div>
+</div>
+
+<a asp-action="Index" class="btn btn-secondary">Back to List</a>

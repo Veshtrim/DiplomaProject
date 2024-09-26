@@ -1,0 +1,50 @@
+﻿@model TemaEDiplomesUBT.Models.ViewModels.SaleViewModel
+
+<h2>Sale Details</h2>
+
+<div>
+    <h4>Sale Information</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Sale Date
+        </dt>
+        <dd class="col-sm-10">
+            @Model.SaleDate.ToString("yyyy-MM-dd")
+        </dd>
+        <dt class="col-sm-2">
+            Total Amount
+        </dt>
+        <dd class="col-sm-10">
+            $@Model.TotalAmount.ToString("0.00")
+        </dd>
+    </dl>
+
+    <h4>Items in this Sale:</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Warehouse</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var detail in Model.SaleDetails)
+            {
+                <tr>
+                    <td>@detail.ProductName</td>
+                    <td>@detail.WarehouseName</td>
+                    <td>@detail.Quantity</td>
+                    <td>$@detail.Price.ToString("0.00")</td>
+                    <td>$@(detail.Quantity * detail.Price)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <a asp-action="Edit" asp-route-id="@Model.SaleId" class="btn btn-primary">Edit</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</div>

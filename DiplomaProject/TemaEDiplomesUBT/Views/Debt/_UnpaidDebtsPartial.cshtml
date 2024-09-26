@@ -1,0 +1,43 @@
+﻿@model List<TemaEDiplomesUBT.Models.ViewModels.DebtViewModel>
+
+<form asp-action="ProcessDebt" method="post">
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">No unpaid debts found for the selected supplier.</div>
+    }
+    else
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Select</th> 
+                    <th>Document Number</th>
+                    <th>Amount</th>
+                    <th>Payment Date</th>
+                    <th>Payment Method</th>
+                    <th>Supplier Name</th>
+                    <th>Is Paid</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.Count; i++)
+                {
+                    <tr>
+                        <td>
+                            <input type="checkbox" asp-for="@Model[i].IsSelectedForPayment" />
+                            <input type="hidden" asp-for="@Model[i].PurchaseId" />
+                            <input type="hidden" asp-for="@Model[i].SupplierId" />
+                        </td>
+                        <td>@Model[i].DocumentNumber</td>
+                        <td>@Model[i].Amount</td>
+                        <td>@Model[i].PaymentDate.ToShortDateString()</td>
+                        <td>@Model[i].PaymentMethod</td>
+                        <td>@Model[i].SupplierName</td>
+                        <td>@Model[i].IsPaid</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <button type="submit" class="btn btn-primary">Pay</button>
+    }
+</form>

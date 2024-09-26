@@ -1,0 +1,51 @@
+﻿@model TemaEDiplomesUBT.Models.ViewModels.PurchaseViewModel
+
+<h2>Purchase Details</h2>
+
+<div class="form-group">
+    <label>Purchase Date:</label>
+    <p>@Model.PurchaseDate.ToString("yyyy-MM-dd")</p>
+</div>
+
+<div class="form-group">
+    <label>Purchase Document Number:</label>
+    <p>@Model.PurchaseDocumentNumber</p>
+</div>
+
+<div class="form-group">
+    <label>Is Paid:</label>
+    <p>@Model.IsPaid.ToString() ?? "No"</p>
+</div>
+
+<div class="form-group">
+    <label>Total Amount:</label>
+    <p>$@Model.TotalAmount.ToString("0.00")</p>
+</div>
+
+<h3>Purchase Items</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Warehouse</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Subtotal</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var detail in Model.PurchaseDetails)
+        {
+            <tr>
+                <td>@detail.ProductName</td>
+                <td>@detail.WarehouseName</td>
+                <td>@detail.Quantity</td>
+                <td>@detail.PurchasePrice.ToString("0.00")</td>
+                <td>@(detail.Quantity * detail.PurchasePrice).ToString("0.00")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Edit" asp-route-id="@Model.PurchaseId" class="btn btn-primary">Edit</a>
+<a asp-action="Index" class="btn btn-secondary">Back to List</a>

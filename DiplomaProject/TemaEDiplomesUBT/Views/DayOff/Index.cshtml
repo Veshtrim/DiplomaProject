@@ -1,0 +1,52 @@
+﻿@model IEnumerable<TemaEDiplomesUBT.Models.ViewModels.DayOffViewModel>
+
+<h2>Day Off List</h2>
+
+<!-- Add a table with the ID for DataTables -->
+<table id="dayOffTable" class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Reason</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.DayOffDate.ToString("yyyy-MM-dd")</td>
+                <td>@item.Reason</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Create" class="btn btn-primary mt-3">Add New Day Off</a>
+
+
+@section Scripts {
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#dayOffTable').DataTable({
+                "paging": true,
+                "searching": true,
+                "ordering": true,
+                "lengthChange": true,
+                "pageLength": 10,
+                "language": {
+                    "search": "Search Day Offs:",
+                    "lengthMenu": "Display _MENU_ records per page",
+                    "zeroRecords": "No matching records found"
+                },
+                "order": [[0, 'desc']] 
+            });
+        });
+    </script>
+}

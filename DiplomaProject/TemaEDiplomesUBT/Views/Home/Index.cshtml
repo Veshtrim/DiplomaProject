@@ -1,0 +1,213 @@
+﻿@model TemaEDiplomesUBT.Models.ViewModels.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Dashboard</h1>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <div class="container-fluid">
+        <!-- Statistics Summary Boxes -->
+        <div class="row">
+            <!-- Total Sales -->
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3>@Model.TotalSales</h3>
+                        <p>Total Sales</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <a asp-controller="Sale" asp-action="Index" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+
+            <!-- Total Purchases -->
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-success">
+                    <div class="inner">
+                        <h3>@Model.TotalPurchases</h3>
+                        <p>Total Purchases</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-receipt"></i>
+                    </div>
+                    <a asp-controller="Purchase" asp-action="Index" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+
+            <!-- Total Debts -->
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-warning">
+                    <div class="inner">
+                        <h3>@Model.TotalDebts</h3>
+                        <p>Unpaid Purchases (Debts)</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-hand-holding-usd"></i>
+                    </div>
+                    <a asp-controller="Debt" asp-action="Index" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+
+            <!-- Total Payments -->
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-danger">
+                    <div class="inner">
+                        <h3>@Model.TotalPayments</h3>
+                        <p>Total Payments</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                    </div>
+                    <a asp-controller="Payment" asp-action="Index" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Warehouses and Stock Items Section -->
+        <div class="row">
+            <!-- Warehouses -->
+            <div class="col-lg-6 col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Warehouses</h3>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Warehouse</th>
+                                    <th>Location</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var warehouse in Model.Warehouses)
+                                {
+                                    <tr>
+                                        <td>@warehouse.Name</td>
+                                        <td>@warehouse.Location</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stock Items -->
+            <div class="col-lg-6 col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Stock Items</h3>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Product Name</th>
+                                    <th>Quantity</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var stock in Model.StockItems)
+                                {
+                                    <tr>
+                                        <td>@stock.ProductName</td>
+                                        <td>@stock.Quantity</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Section - Moved to the Bottom, Centered, and Spaced -->
+        <div class="row justify-content-center mt-4">
+            <div class="col-lg-4 col-md-6 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Total Amount Paid on Sales</h3>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="salesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Total Amount Paid on Purchases</h3>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="purchasesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        var ctxSales = document.getElementById('salesChart').getContext('2d');
+        var salesChart = new Chart(ctxSales, {
+            type: 'doughnut',
+            data: {
+                labels: ['Total Sales Paid'],
+                datasets: [{
+                    label: 'Sales',
+                    data: [@Model.TotalAmountPaidOnSales],
+                    backgroundColor: ['rgba(54, 162, 235, 0.6)'],
+                    borderColor: ['rgba(54, 162, 235, 1)'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                }
+            }
+        });
+
+        var ctxPurchases = document.getElementById('purchasesChart').getContext('2d');
+        var purchasesChart = new Chart(ctxPurchases, {
+            type: 'doughnut',
+            data: {
+                labels: ['Total Purchases Paid'],
+                datasets: [{
+                    label: 'Purchases',
+                    data: [@Model.TotalAmountPaidOnPurchases],
+                    backgroundColor: ['rgba(75, 192, 192, 0.6)'],
+                    borderColor: ['rgba(75, 192, 192, 1)'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                }
+            }
+        });
+    </script>
+}
